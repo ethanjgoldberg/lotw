@@ -94,15 +94,14 @@ function PowerUp (style, goody) {
 			ctx.lineTo(this.radius/2, this.radius/2);
 			ctx.moveTo(-this.radius/2, this.radius/2);
 			ctx.lineTo(this.radius/2, -this.radius/2);
-			ctx.stroke();
 		} else {
-			ctx.stroke();
 			if (!--this.countdown) this.countdown = 60;
 			if (this.countdown > 30) {
 				ctx.arc(0, 0, this.radius/3, 0, Math.PI * 2, false);
 				ctx.fill();
 			}
 		}
+		ctx.stroke();
 		ctx.restore();
 	}
 }
