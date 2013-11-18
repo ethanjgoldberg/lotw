@@ -133,7 +133,10 @@ function go() {
 
 	function draw () {
 		if (!paused) {
-			tick();
+			if (tick()) {
+				stop();
+				return;
+			}
 
 			if (trails) {
 				ctx.save();
@@ -166,56 +169,54 @@ function go() {
 
 	var now = new Date();
 	function tick () {
-		if (!paused) {
-			var delta = (new Date() - now);
-			now = new Date();
+		var delta = (new Date() - now);
+		now = new Date();
 
-			for (var i = 0; i < powerdowns.length; i++) {
-				if (!--powerdowns[i][0]) {
-					powerdowns[i][1]();
-					powerdowns.splice(i, 1);
-				}
+		for (var i = 0; i < powerdowns.length; i++) {
+			if (!--powerdowns[i][0]) {
+				powerdowns[i][1]();
+				powerdowns.splice(i, 1);
+			}
+		}
+
+		if (glider.tick(delta, wind, canvas.height)) {
+			updateScore();
+		}
+
+		while (glider.x > canvas.width) glider.x -= canvas.width;
+		while (glider.x < 0) glider.x += canvas.width;
+
+		for (var g = 0; g < goodies.length; g++) {
+			if (goodies[g].tick(delta, glider.magnet, glider.x, glider.y)) {
+				goodies.splice(g, 1);
+				continue;
 			}
 
-			if (glider.tick(delta, wind, canvas.height)) {
+			if (glider.collideWith(goodies[g], canvas.width)) {
+				if (goodies[g].style) powerUpDoes[goodies[g].style]();
+				else if (goodies[g].points < 0) {
+					glider.lives--;
+					if (glider.lives < 0) {
+						return true;
+					}
+					glider.multiplier = 1;
+				} else if (goodies[g].points == 0) {
+					glider.lives++;
+				}
+
+				glider.givePoints(goodies[g].points);
+				effects[goodies[g].effect[0]] = goodies[g].effect[1];
+
+				if (glider.score < 0) glider.score = 0;
+				goodies.splice(g, 1);
 				updateScore();
 			}
-
-			while (glider.x > canvas.width) glider.x -= canvas.width;
-			while (glider.x < 0) glider.x += canvas.width;
-
-			for (var g = 0; g < goodies.length; g++) {
-				if (goodies[g].tick(delta, glider.magnet, glider.x, glider.y)) {
-					goodies.splice(g, 1);
-					continue;
-				}
-
-				if (glider.collideWith(goodies[g], canvas.width)) {
-					if (goodies[g].style) powerUpDoes[goodies[g].style]();
-					else if (goodies[g].points < 0) {
-						glider.lives--;
-						if (glider.lives < 0) {
-							stop();
-							return;
-						}
-						glider.multiplier = 1;
-					} else if (goodies[g].points == 0) {
-						glider.lives++;
-					}
-
-					glider.givePoints(goodies[g].points);
-					effects[goodies[g].effect[0]] = goodies[g].effect[1];
-
-					if (glider.score < 0) glider.score = 0;
-					goodies.splice(g, 1);
-					updateScore();
-				}
-			}
-
-			for (var i = 0; i < delta / 17; i++)
-				if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
-
 		}
+
+		for (var i = 0; i < delta / 17; i++)
+			if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
+
+		return false;
 	}
 
 	window.requestAnimationFrame(draw);
