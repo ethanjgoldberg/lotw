@@ -34,6 +34,7 @@ function go() {
 	var goodies = [new Goody(1, 100, -20, 0, 1)];
 	var effects = {};
 	var trails = 0;
+	var speed = 1;
 
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
@@ -78,7 +79,7 @@ function go() {
 		}
 
 		if (Math.random() < 0.03) {
-			var styles = ['+', '-', 'm', 't'];
+			var styles = ['+', '-', 'm', 't', '.', ','];
 			var style = styles[Math.floor(Math.random()*styles.length)];
 			goody = new PowerUp(style, goody);
 		}
@@ -116,6 +117,18 @@ function go() {
 			powerdowns.push([900, function () {
 				trails--;
 			}, 't']);
+		},
+		'.': function () {
+			speed *= 2;
+			powerdowns.push([900, function () {
+				speed /= 2;
+			}, '.']);
+		},
+		',': function () {
+			speed /= 2;
+			powerdowns.push([900, function () {
+				speed *= 2;
+			}, ',']);
 		},
 		'x': function () {
 			glider.multiplier++;
@@ -167,11 +180,7 @@ function go() {
 		window.requestAnimationFrame(draw);
 	}
 
-	var now = new Date();
 	function tick () {
-		var delta = (new Date() - now);
-		now = new Date();
-
 		for (var i = 0; i < powerdowns.length; i++) {
 			if (!--powerdowns[i][0]) {
 				powerdowns[i][1]();
@@ -179,7 +188,7 @@ function go() {
 			}
 		}
 
-		if (glider.tick(delta, wind, canvas.height)) {
+		if (glider.tick(1, wind, canvas.height)) {
 			updateScore();
 		}
 
@@ -187,7 +196,7 @@ function go() {
 		while (glider.x < 0) glider.x += canvas.width;
 
 		for (var g = 0; g < goodies.length; g++) {
-			if (goodies[g].tick(delta, glider.magnet, glider.x, glider.y)) {
+			if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y)) {
 				goodies.splice(g, 1);
 				continue;
 			}
@@ -213,8 +222,7 @@ function go() {
 			}
 		}
 
-		for (var i = 0; i < delta / 17; i++)
-			if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
+		if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
 
 		return false;
 	}

@@ -29,9 +29,8 @@ function Glider () {
 		if (width - this.x < this.halfWidth) d(-width);
 	}
 
-	this.tick = function (delta, wind, height) {
+	this.tick = function (mult, wind, height) {
 		var r = false;
-		var mult = 1;//delta / 17;
 
 		if (this.keys.cw) this.h += mult * this.turn;
 		if (this.keys.ccw) this.h -= mult * this.turn;

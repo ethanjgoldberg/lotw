@@ -50,8 +50,7 @@ function Goody (points, x, y, vx, vy) {
 
 	this.radius = 8;
 
-	this.tick = function (delta, magnet, mx, my) {
-		var mult = 1; //delta / 17;
+	this.tick = function (mult, magnet, mx, my) {
 		if (this.points > 0 && magnet) {
 			var d = dist2(mx, my, this.x, this.y);
 
