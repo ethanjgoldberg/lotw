@@ -58,7 +58,7 @@ function go() {
 		ctx.fillText('Press space to play again.', canvas.width/2, canvas.height/2 + 20);
 		ctx.font = '30pt Helvetica';
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
-		
+
 		paused = true;
 		go();
 	}
@@ -106,7 +106,7 @@ function go() {
 			}, '-']);
 		},
 		'm': function () {
-			glider.magnet = 2000;
+			glider.magnet = 3000;
 			powerdowns.push([900, function () {
 				glider.magnet = 0;
 			}, 'm']);
@@ -131,8 +131,10 @@ function go() {
 		}
 	}
 
-	function tick () {
+	function draw () {
 		if (!paused) {
+			tick();
+
 			if (trails) {
 				ctx.save();
 				ctx.fillStyle = 'rgba(255, 255, 255, .05)';
@@ -140,28 +142,53 @@ function go() {
 				ctx.restore();
 			} else ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+			drawUps();
+
+			glider.draw(ctx, canvas.width);
+
+			for (var g = 0; g < goodies.length; g++) {
+				goodies[g].draw(ctx);
+			}
+
+			for (var e in effects) {
+				if (effects[e]) {
+					effects[e]--;
+					ctx.save();
+					ctx.fillStyle = e.replace(/\$/, (effects[e] / 120));
+					ctx.fillRect(0,0,canvas.width,canvas.height);
+					ctx.restore();
+				}
+			}
+		}
+
+		window.requestAnimationFrame(draw);
+	}
+
+	var now = new Date();
+	function tick () {
+		if (!paused) {
+			var delta = (new Date() - now);
+			now = new Date();
+
 			for (var i = 0; i < powerdowns.length; i++) {
 				if (!--powerdowns[i][0]) {
 					powerdowns[i][1]();
 					powerdowns.splice(i, 1);
 				}
 			}
-			drawUps();
 
-			if (glider.tick(wind, canvas.height)) {
+			if (glider.tick(delta, wind, canvas.height)) {
 				updateScore();
 			}
-			glider.draw(ctx, canvas.width);
 
 			while (glider.x > canvas.width) glider.x -= canvas.width;
 			while (glider.x < 0) glider.x += canvas.width;
 
 			for (var g = 0; g < goodies.length; g++) {
-				if (goodies[g].tick(glider.magnet, glider.x, glider.y)) {
+				if (goodies[g].tick(delta, glider.magnet, glider.x, glider.y)) {
 					goodies.splice(g, 1);
 					continue;
 				}
-				goodies[g].draw(ctx);
 
 				if (glider.collideWith(goodies[g], canvas.width)) {
 					if (goodies[g].style) powerUpDoes[goodies[g].style]();
@@ -185,20 +212,11 @@ function go() {
 				}
 			}
 
-			if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
+			for (var i = 0; i < delta / 17; i++)
+				if (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
 
-			for (var e in effects) {
-				if (effects[e]) {
-					effects[e]--;
-					ctx.save();
-					ctx.fillStyle = e.replace(/\$/, (effects[e] / 120));
-					ctx.fillRect(0,0,canvas.width,canvas.height);
-					ctx.restore();
-				}
-			}
 		}
-		window.requestAnimationFrame(tick);
 	}
 
-	window.requestAnimationFrame(tick);
+	window.requestAnimationFrame(draw);
 }

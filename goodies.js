@@ -1,3 +1,28 @@
+function drawBall(fill, stroke, radius) {
+	var g_canvas = document.createElement('canvas');
+	g_canvas.width = radius*2 + 4;
+	g_canvas.height = radius*2 + 4;
+	var g_context = g_canvas.getContext("2d");
+
+	g_context.arc(radius+2,radius+2,radius,0,Math.PI*2,false);
+
+	g_context.fillStyle = fill;
+	g_context.strokeStyle = stroke;
+	g_context.lineWidth = 3;
+
+	g_context.stroke();
+	g_context.fill();
+
+	return g_canvas;
+}
+
+var gumdrops = {
+	'green': drawBall('#0f0', '#030', 8),
+	'red': drawBall('#f00', '#300', 8),
+	'blue': drawBall('#00f', '#003', 8),
+	'gold': drawBall('#ff0', '#330', 8),
+};
+
 function Goody (points, x, y, vx, vy) {
 	this.x = x;
 	this.y = y;
@@ -9,53 +34,40 @@ function Goody (points, x, y, vx, vy) {
 
 	if (points > 0) {
 		if (points < 100) {
-			this.fs = '#0f0';
-			this.ss = '#030';
-			this.effect = [this.fs, 0];
+			this.color = 'green';
+			this.effect = ['#', 0];
 		} else {
-			this.fs = '#ff0';
-			this.ss = '#330';
+			this.color = 'gold';
 			this.effect = ['rgba(255,255,0,$)', 60];
 		}
 	} else if (points < 0) {
-		this.fs = '#f00';
-		this.ss = '#300';
+		this.color = 'red';
 		this.effect = ['rgba(255,0,0,$)', 30];
 	} else {
-		this.fs = '#00f';
-		this.ss = '#003';
+		this.color = 'blue';
 		this.effect = ['rgba(0,0,255,$)', 60];
 	}
 
 	this.radius = 8;
 
-	this.tick = function (magnet, mx, my) {
+	this.tick = function (delta, magnet, mx, my) {
+		var mult = 1; //delta / 17;
 		if (this.points > 0 && magnet) {
 			var d = dist2(mx, my, this.x, this.y);
 
 			var correction = magnet / (d * d);
-			console.log(correction);
 			
 			if (this.points >= 100) correction = -correction;
 			this.vx += correction * (mx - this.x);
 			this.vy += correction * (my - this.y);
 		}
 
-		this.x += this.vx;
-		this.y += this.vy;
+		this.x += mult * this.vx;
+		this.y += mult * this.vy;
 	}
 
 	this.draw = function (ctx) {
-		ctx.save();
-		ctx.fillStyle = this.fs;
-		ctx.strokeStyle = this.ss;
-		ctx.translate(this.x, this.y);
-		ctx.beginPath();
-		ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
-		ctx.fill();
-		ctx.lineWidth = 2;
-		ctx.stroke();
-		ctx.restore();
+		ctx.drawImage(gumdrops[this.color], this.x - this.radius, this.y - this.radius);
 	}
 }
 

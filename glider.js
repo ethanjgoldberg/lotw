@@ -29,11 +29,12 @@ function Glider () {
 		if (width - this.x < this.halfWidth) d(-width);
 	}
 
-	this.tick = function (wind, height) {
+	this.tick = function (delta, wind, height) {
 		var r = false;
+		var mult = 1;//delta / 17;
 
-		if (this.keys.cw) this.h += this.turn;
-		if (this.keys.ccw) this.h -= this.turn;
+		if (this.keys.cw) this.h += mult * this.turn;
+		if (this.keys.ccw) this.h -= mult * this.turn;
 
 		if (this.y > height + 40) {
 			this.vy *= -1;
@@ -50,13 +51,13 @@ function Glider () {
 
 		var dotted = windVec[0] * Math.cos(this.h + Math.PI/2) + windVec[1] * Math.sin(this.h + Math.PI/2);
 
-		this.vx += dotted * Math.cos(this.h + Math.PI/2);
-		this.vy += dotted * Math.sin(this.h + Math.PI/2);
+		this.vx += mult * dotted * Math.cos(this.h + Math.PI/2);
+		this.vy += mult * dotted * Math.sin(this.h + Math.PI/2);
 		
-		this.vy += grav;
+		this.vy += mult * grav;
 
-		this.x += this.vx;
-		this.y += this.vy;
+		this.x += mult * this.vx;
+		this.y += mult * this.vy;
 
 		return r;
 	}
