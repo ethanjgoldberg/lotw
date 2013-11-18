@@ -14,10 +14,13 @@ function Glider () {
 	this.multiplier = 1;
 	this.magnet = false;
 	this.lives = 3;
+	this.shields = 0;
 
 	this.draw = function (ctx, width) {
 		var d = (function (offset) {
 			ctx.save();
+			ctx.shadowBlur = 7 * this.shields;
+			ctx.shadowColor = '#00f'
 			ctx.translate(this.x + offset, this.y);
 			ctx.rotate(this.h);
 			ctx.fillRect(-this.halfWidth, 0, 2*this.halfWidth, 3);
@@ -85,6 +88,16 @@ function Glider () {
 		if (width - this.x < this.halfWidth && collide(-width)) return true;
 	}
 
+	this.damage = function () {
+		if (this.shields) {
+			this.shields--;
+			return;
+		}
+		this.multiplier = 1;
+		this.lives--;
+		return !this.lives;
+	}
+
 	this.givePoints = function (points) {
 		this.score += points * this.multiplier;
 	}
@@ -96,7 +109,7 @@ function Glider () {
 
 	this.key = function(down, code) {
 		//console.log(code);
-		if (down && code == 32) paused = !paused;
+		if (down && code == 80) paused = !paused;
 		if (code == 72 || code == 37) {
 			this.keys.ccw = down;
 		}

@@ -56,7 +56,7 @@ function go() {
 		ctx.font = '30pt Helvetica';
 		ctx.fillText('Game Over.', canvas.width/2, canvas.height/2);
 		ctx.font = '16pt Helvetica';
-		ctx.fillText('Press space to play again.', canvas.width/2, canvas.height/2 + 20);
+		ctx.fillText('Press \'P\' to play again.', canvas.width/2, canvas.height/2 + 20);
 		ctx.font = '30pt Helvetica';
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
 
@@ -70,16 +70,15 @@ function go() {
 		var points = (Math.random() < 0.4)? 1: -1;
 
 		if (Math.random() < (0.04 / (glider.lives + 1))) points = 0;
+		if (Math.random() < 0.001) {
+			vy = 4;
+			points = 25;
+		}
 
 		var goody = new Goody(points * vy, x, -20, 0, vy);
 
-		if (Math.random() < 0.001) {
-			goody.points = 100;
-			goody.vy = 4;
-		}
-
 		if (Math.random() < 0.03) {
-			var styles = ['+', '-', 'm', 't', '.', ','];
+			var styles = ['+', '-', 'm', 't', '.', ',', 's'];
 			var style = styles[Math.floor(Math.random()*styles.length)];
 			goody = new PowerUp(style, goody);
 		}
@@ -107,9 +106,9 @@ function go() {
 			}, '-']);
 		},
 		'm': function () {
-			glider.magnet = 3000;
+			glider.magnet += 3000;
 			powerdowns.push([900, function () {
-				glider.magnet = 0;
+				glider.magnet -= 3000;
 			}, 'm']);
 		},
 		't': function () {
@@ -129,6 +128,9 @@ function go() {
 			powerdowns.push([900, function () {
 				speed *= 2;
 			}, ',']);
+		},
+		's': function () {
+			glider.shields++;
 		},
 		'x': function () {
 			glider.multiplier++;
@@ -202,19 +204,17 @@ function go() {
 			}
 
 			if (glider.collideWith(goodies[g], canvas.width)) {
+				var doEffect = true;
 				if (goodies[g].style) powerUpDoes[goodies[g].style]();
 				else if (goodies[g].points < 0) {
-					glider.lives--;
-					if (glider.lives < 0) {
-						return true;
-					}
-					glider.multiplier = 1;
+					doEffect = !glider.shields;
+					if (glider.damage()) return true;
 				} else if (goodies[g].points == 0) {
 					glider.lives++;
 				}
 
 				glider.givePoints(goodies[g].points);
-				effects[goodies[g].effect[0]] = goodies[g].effect[1];
+				if (doEffect) effects[goodies[g].effect[0]] = goodies[g].effect[1];
 
 				if (glider.score < 0) glider.score = 0;
 				goodies.splice(g, 1);
