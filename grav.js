@@ -35,6 +35,7 @@ function go() {
 	var effects = {};
 	var trails = 0;
 	var speed = 1;
+	var difficulty = 6;
 
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
@@ -158,12 +159,13 @@ function go() {
 				ctx.beginPath();
 				
 				ctx.arc(0, 0, 50, Math.PI, 0, false);
-				ctx.arc(0, 0, 30, Math.PI, 0, false);
 				
 				ctx.moveTo(-50, 0);
 				ctx.lineTo(-50, 50);
 				ctx.lineTo(-30, 50);
 				ctx.lineTo(-30, 0);
+
+				ctx.arc(0, 0, 30, Math.PI, 0, false);
 
 				ctx.moveTo(50, 0);
 				ctx.lineTo(50, 50);
@@ -362,7 +364,7 @@ function go() {
 			}
 		}
 
-		while (Math.random() < diff * (1 - 5 / Math.log(glider.score+(Math.pow(Math.E,5.01))))) addGoody();
+		while (Math.random() < diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))))) addGoody();
 
 		return false;
 	}

@@ -95,7 +95,7 @@ function Glider () {
 		}
 		this.multiplier = 1;
 		this.lives--;
-		return !this.lives;
+		return this.lives < 0;
 	}
 
 	this.givePoints = function (points) {
