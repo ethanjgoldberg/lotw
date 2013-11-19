@@ -352,7 +352,7 @@ function go() {
 			drawScore();
 			drawUps();
 
-			glider.draw(ctx, canvas.width);
+			glider.draw(ctx, canvas.width, canvas.height);
 
 			for (var g = 0; g < goodies.length; g++) {
 				goodies[g].draw(ctx);

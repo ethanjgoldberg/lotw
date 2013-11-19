@@ -16,20 +16,40 @@ function Glider (x, y) {
 	this.lives = 3;
 	this.shields = 0;
 
-	this.draw = function (ctx, width) {
-		var d = (function (offset) {
+	this.draw = function (ctx, width, height) {
+		var d = (function (x, y, factor) {
+			factor = factor || 1;
 			ctx.save();
 			ctx.shadowBlur = 7 * this.shields;
 			ctx.shadowColor = '#00f'
-			ctx.translate(this.x + offset, this.y);
+			ctx.translate(x, y);
 			ctx.rotate(this.h);
+			ctx.scale(factor, factor);
+			ctx.fillStyle = '#000';
 			ctx.fillRect(-this.halfWidth, 0, 2*this.halfWidth, 3);
 			ctx.restore();
 		}).bind(this);
 
-		d(0);
-		if (this.x < this.halfWidth) d(width);
-		if (width - this.x < this.halfWidth) d(-width);
+		d(this.x, this.y);
+		if (this.x < this.halfWidth) d(this.x + width, this.y);
+		if (width - this.x < this.halfWidth) d(this.x - width, this.y);
+
+		if (this.y > height + this.halfWidth) {
+			ctx.save();
+			ctx.fillStyle = '#000';
+			ctx.beginPath();
+			ctx.lineWidth = 3;
+			ctx.moveTo(this.x - 6, height - 8);
+			ctx.lineTo(this.x + 6, height - 8);
+			ctx.lineTo(this.x, height - 2);
+			ctx.fill();
+			ctx.restore();
+
+			ctx.save();
+			var factor = 200 / (this.y - height - this.halfWidth + 200);
+			d(this.x, height - 50, factor);
+			ctx.restore();
+		}
 	}
 
 	this.tick = function (mult, wind, height) {
