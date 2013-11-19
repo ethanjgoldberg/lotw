@@ -22,7 +22,7 @@ function go() {
 	var canvas = document.getElementById('c');
 	canvas.width = window.innerWidth * 0.85;
 	canvas.height = window.innerHeight * 0.9;
-	var diff = canvas.width / 716;
+	var diff = canvas.width / 400;
 	var ctx = canvas.getContext('2d');
 
 	var glider = new Glider();
@@ -94,7 +94,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 				ctx.beginPath();
@@ -118,7 +118,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 				ctx.beginPath();
@@ -140,7 +140,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 
@@ -179,7 +179,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 
@@ -202,7 +202,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 				ctx.beginPath();
@@ -239,7 +239,7 @@ function go() {
 				ctx.save();
 				ctx.translate(canvas.width/2, canvas.height/2);
 				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 240);
+				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
 				var factor = 360 / (240 + t);
 				ctx.scale(factor, factor);
 
@@ -379,7 +379,8 @@ function go() {
 			}
 		}
 
-		while (Math.random() < diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))))) addGoody();
+		var chance = diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))));
+		while (Math.random() < chance) addGoody();
 
 		return false;
 	}
