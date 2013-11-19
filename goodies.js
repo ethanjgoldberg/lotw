@@ -95,6 +95,8 @@ function PowerUp (style, goody) {
 			ctx.moveTo(-this.radius/2, this.radius/2);
 			ctx.lineTo(this.radius/2, -this.radius/2);
 		} else {
+			ctx.stroke();
+			ctx.beginPath();
 			if (!--this.countdown) this.countdown = 60;
 			if (this.countdown > 30) {
 				ctx.arc(0, 0, this.radius/3, 0, Math.PI * 2, false);

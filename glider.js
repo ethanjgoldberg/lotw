@@ -12,7 +12,7 @@ function Glider (x, y) {
 
 	this.score = 0;
 	this.multiplier = 1;
-	this.magnet = false;
+	this.magnet = 0;
 	this.lives = 3;
 	this.shields = 0;
 
@@ -76,6 +76,9 @@ function Glider (x, y) {
 	}
 
 	this.collideWith = function (goody, width) {
+		var cosh = Math.cos(-this.h);
+		var sinh = Math.sin(-this.h);
+
 		var collide = (function (offset) {
 			var thisx = this.x + offset;
 			var thisy = this.y + 1.5; // since we draw the glider with width 3.
@@ -85,9 +88,6 @@ function Glider (x, y) {
 
 			if (Math.abs(dx) > goody.radius + this.halfWidth) return false;
 			if (Math.abs(dy) > goody.radius + this.halfWidth) return false;
-
-			var cosh = Math.cos(-this.h);
-			var sinh = Math.sin(-this.h);
 
 			var rotated_x = Math.abs(dx * cosh - dy * sinh);
 			var rotated_y = Math.abs(dx * sinh + dy * cosh);
