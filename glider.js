@@ -1,6 +1,6 @@
-function Glider () {
-	this.x = 100;
-	this.y = 100;
+function Glider (x, y) {
+	this.x = x;
+	this.y = y;
 
 	this.h = 0;
 	this.turn = .05

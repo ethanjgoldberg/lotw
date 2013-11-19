@@ -11,6 +11,7 @@ function Wind () {
 }
 
 paused = false;
+started = false;
 
 function go() {
 	if (paused) {
@@ -20,14 +21,14 @@ function go() {
 	var start = new Date();
 
 	var canvas = document.getElementById('c');
-	canvas.width = window.innerWidth * 0.85;
-	canvas.height = window.innerHeight * 0.9;
+	canvas.width = window.innerWidth * 0.98;
+	canvas.height = window.innerHeight * 0.97;
 	var diff = canvas.width / 400;
 	var ctx = canvas.getContext('2d');
 
-	var glider = new Glider();
+	var glider = new Glider(canvas.width/2, 100);
 	var wind = new Wind();
-	var goodies = [new Goody(1, 100, -20, 0, 1)];
+	var goodies = [new Goody(1, canvas.width/2, 340, 0, 0)];
 	var effects = {};
 	var trails = 0;
 	var speed = 1;
@@ -50,6 +51,7 @@ function go() {
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
 
 		paused = true;
+		started = false;
 		go();
 	}
 
@@ -276,7 +278,35 @@ function go() {
 		}
 	}
 
+	function drawStart () {
+		if (started || paused) return;
+
+		ctx.save();
+
+		ctx.fillStyle = 'rgba(255,255,255,.5)';
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+
+		ctx.fillStyle = '#000';
+		ctx.textAlign = 'center';
+
+		ctx.font = '36pt Calibri';
+		ctx.fillText('a leaf on the wind', canvas.width/2, 40);
+
+		ctx.font = '12pt Calibri';
+		ctx.fillText('left and right arrows to turn your glider.', canvas.width/2, 140);
+		ctx.fillText('catch green orbs to get points.\norbs that move faster give more points.', canvas.width/2, 170);
+		ctx.fillText('avoid red orbs. each red orb costs you a life.', canvas.width/2, 200);
+		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);
+		ctx.fillText('the golden orb is very rare. it is worth 100 points.', canvas.width/2, 260);
+		ctx.fillText('power-ups do a variety of things, not all of them good.', canvas.width/2, 290);
+		ctx.fillText('ready? pop this orb to begin.', canvas.width/2, 320);
+
+		ctx.restore();
+	}
+
 	function drawScore () {
+		if (!started) return;
+
 		var hw = canvas.width / 2;
 
 		ctx.save();
@@ -339,6 +369,8 @@ function go() {
 			}
 		}
 
+		if (!started) drawStart();
+
 		window.requestAnimationFrame(draw);
 	}
 
@@ -363,9 +395,14 @@ function go() {
 
 			if (glider.collideWith(goodies[g], canvas.width)) {
 				var doEffect = true;
-				if (goodies[g].style) powerUpDoes[goodies[g].style]();
+				if (!started) {
+					started = true;
+				} else if (goodies[g].style) powerUpDoes[goodies[g].style]();
 				else if (goodies[g].points < 0) {
-					doEffect = !glider.shields;
+					if (glider.shields) {
+						doEffect = false;
+						glider.score -= goodies[g].points;
+					}
 					if (glider.damage()) return true;
 				} else if (goodies[g].points == 0) {
 					glider.lives++;
@@ -379,8 +416,10 @@ function go() {
 			}
 		}
 
-		var chance = diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))));
-		while (Math.random() < chance) addGoody();
+		if (started) {
+			var chance = diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))));
+			while (Math.random() < chance) addGoody();
+		}
 
 		return false;
 	}
