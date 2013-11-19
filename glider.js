@@ -38,15 +38,6 @@ function Glider (x, y) {
 		if (this.keys.cw) this.h += mult * this.turn;
 		if (this.keys.ccw) this.h -= mult * this.turn;
 
-		if (this.y > height + 40) {
-			this.vy *= -1;
-			this.h *= -1;
-			this.y = height + 40;
-			this.multiplier = 1;
-
-			r = true;
-		}
-
 		var windVec = wind.getWindAt(this.x, this.y);
 		windVec[0] -= this.vx;
 		windVec[1] -= this.vy;
@@ -74,12 +65,27 @@ function Glider (x, y) {
 
 			var dotted = dx * Math.cos(this.h) + dy * Math.sin(this.h);
 
-			var px = this.x + dotted * Math.cos(this.h);
-			var py = this.y + dotted * Math.sin(this.h);
+			var cosh = Math.cos(this.h);
+			var sinh = Math.sin(this.h);
 
-			if (dist2(px, py, this.x, this.y) > this.halfWidth*this.halfWidth)
+			var px = this.x + dotted * cosh;
+			var py = this.y + dotted * sinh;
+
+			var rr = goody.radius * goody.radius;
+
+			if (dist2(px, py, this.x, this.y) > this.halfWidth*this.halfWidth) {
+				var mx = this.halfWidth * cosh;
+				var my = this.halfWidth * sinh;
+
+				if (dist2(this.x + mx, this.y + my, goody.x, goody.y) < rr) {
+					return true;
+				}
+				if (dist2(this.x - mx, this.y - my, goody.x, goody.y) < rr) {
+					return true;
+				}
 				return false;
-			if (dist2(px, py, goody.x, goody.y) > goody.radius*goody.radius)
+			}
+			if (dist2(px, py, goody.x, goody.y) > rr)
 				return false;
 			return true;
 		}).bind(this);

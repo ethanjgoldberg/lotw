@@ -66,7 +66,7 @@ function Goody (points, x, y, vx, vy) {
 	}
 
 	this.draw = function (ctx) {
-		ctx.drawImage(gumdrops[this.color], this.x - this.radius, this.y - this.radius);
+		ctx.drawImage(gumdrops[this.color], this.x - this.radius - 2, this.y - this.radius - 2);
 	}
 }
 
