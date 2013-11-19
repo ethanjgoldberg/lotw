@@ -44,10 +44,10 @@ function go() {
 		ctx.textAlign = 'center';
 
 		ctx.font = '30pt Calibri';
-		ctx.fillText('Game Over.', canvas.width/2, canvas.height/2);
+		ctx.fillText('game over', canvas.width/2, canvas.height/2);
 		ctx.font = '16pt Calibri';
-		ctx.fillText('Press \'P\' to play again.', canvas.width/2, canvas.height/2 + 20);
-		ctx.font = '30pt Calibri';
+		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 20);
+		ctx.font = '24pt Calibri';
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
 
 		paused = true;
@@ -294,7 +294,7 @@ function go() {
 
 		ctx.font = '12pt Calibri';
 		ctx.fillText('left and right arrows to turn your glider.', canvas.width/2, 140);
-		ctx.fillText('catch green orbs to get points.\norbs that move faster give more points.', canvas.width/2, 170);
+		ctx.fillText('catch green orbs to get points. orbs that move faster give more points.', canvas.width/2, 170);
 		ctx.fillText('avoid red orbs. each red orb costs you a life.', canvas.width/2, 200);
 		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);
 		ctx.fillText('the golden orb is very rare. it is worth 100 points.', canvas.width/2, 260);
@@ -408,7 +408,7 @@ function go() {
 					glider.lives++;
 				}
 
-				glider.givePoints(goodies[g].points);
+				glider.givePoints(Math.ceil(speed * goodies[g].points));
 				if (doEffect) effects[goodies[g].effect[0]] = goodies[g].effect[1];
 
 				if (glider.score < 0) glider.score = 0;

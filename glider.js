@@ -86,6 +86,7 @@ function Glider (x, y) {
 		if (collide(0)) return true;
 		if (this.x < this.halfWidth && collide(width)) return true;
 		if (width - this.x < this.halfWidth && collide(-width)) return true;
+		return false;
 	}
 
 	this.damage = function () {
