@@ -349,8 +349,10 @@ function go() {
 				ctx.restore();
 			} else ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-			drawScore();
-			drawUps();
+			if (started) {
+				drawScore();
+				drawUps();
+			}
 
 			glider.draw(ctx, canvas.width, canvas.height);
 

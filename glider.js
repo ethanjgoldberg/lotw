@@ -20,8 +20,10 @@ function Glider (x, y) {
 		var d = (function (x, y, factor) {
 			factor = factor || 1;
 			ctx.save();
-			ctx.shadowBlur = 7 * this.shields;
-			ctx.shadowColor = '#00f'
+			if (this.shields) {
+				ctx.shadowBlur = 7 * this.shields;
+				ctx.shadowColor = '#00f'
+			}
 			ctx.translate(x, y);
 			ctx.rotate(this.h);
 			ctx.scale(factor, factor);
