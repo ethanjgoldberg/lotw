@@ -25,10 +25,6 @@ function go() {
 	var diff = canvas.width / 716;
 	var ctx = canvas.getContext('2d');
 
-	var score = document.getElementById('score');
-	var multiplier = document.getElementById('multiplier');
-	var lives = document.getElementById('lives');
-
 	var glider = new Glider();
 	var wind = new Wind();
 	var goodies = [new Goody(1, 100, -20, 0, 1)];
@@ -40,25 +36,17 @@ function go() {
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
 
-	function updateScore () {
-		score.innerHTML = glider.score;
-		multiplier.innerHTML = 'x' + glider.multiplier;
-		lives.innerHTML = '' + glider.lives + ' lives.';
-	}
-
-	updateScore();
-
 	function stop () {
 		ctx.fillStyle = 'rgba(255,255,255,.5)';
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.fillStyle = '#000';
 		ctx.textAlign = 'center';
 
-		ctx.font = '30pt Helvetica';
+		ctx.font = '30pt Calibri';
 		ctx.fillText('Game Over.', canvas.width/2, canvas.height/2);
-		ctx.font = '16pt Helvetica';
+		ctx.font = '16pt Calibri';
 		ctx.fillText('Press \'P\' to play again.', canvas.width/2, canvas.height/2 + 20);
-		ctx.font = '30pt Helvetica';
+		ctx.font = '30pt Calibri';
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
 
 		paused = true;
@@ -288,6 +276,35 @@ function go() {
 		}
 	}
 
+	function drawScore () {
+		var hw = canvas.width / 2;
+
+		ctx.save();
+		ctx.fillStyle = 'rgba(0,0,0,.25);';
+		ctx.strokeStyle = 'rgba(0,0,0,.5);';
+
+		ctx.font = '96pt Calibri';
+		var s1 = glider.score.toString();
+		var size1 = ctx.measureText(s1).width;
+
+		ctx.textAlign = 'left';
+		ctx.font = '24pt Calibri';
+		var s2 = 'x' + glider.multiplier;
+		var size2 = ctx.measureText(s2).width;
+
+		ctx.font = '96pt Calibri';
+		ctx.fillText(s1, hw - (size1 + size2)/2, canvas.height - 4);
+		ctx.font = '24pt Calibri';
+		ctx.fillText(s2, hw - (size2 - size1)/2, canvas.height - 4);
+
+		for (var i = 0; i < glider.lives; i++) {
+			var y = canvas.height - (90 - 4*i);
+			ctx.fillRect(hw - (size2 - size1)/2, y, size2 - 4, 2);
+		}
+
+		ctx.restore();
+	}
+
 	function draw () {
 		if (!paused) {
 			if (tick()) {
@@ -302,6 +319,7 @@ function go() {
 				ctx.restore();
 			} else ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+			drawScore();
 			drawUps();
 
 			glider.draw(ctx, canvas.width);
@@ -332,9 +350,7 @@ function go() {
 			}
 		}
 
-		if (glider.tick(1, wind, canvas.height)) {
-			updateScore();
-		}
+		glider.tick(1, wind, canvas.height);
 
 		while (glider.x > canvas.width) glider.x -= canvas.width;
 		while (glider.x < 0) glider.x += canvas.width;
@@ -360,7 +376,6 @@ function go() {
 
 				if (glider.score < 0) glider.score = 0;
 				goodies.splice(g, 1);
-				updateScore();
 			}
 		}
 
