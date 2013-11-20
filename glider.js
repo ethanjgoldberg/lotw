@@ -28,7 +28,7 @@ function Glider (x, y) {
 			ctx.rotate(this.h);
 			ctx.scale(factor, factor);
 			ctx.fillStyle = '#000';
-			ctx.fillRect(-this.halfWidth, 0, 2*this.halfWidth, 3);
+			ctx.fillRect(-this.halfWidth, -1.5, 2*this.halfWidth, 3);
 			ctx.restore();
 		}).bind(this);
 
@@ -78,24 +78,25 @@ function Glider (x, y) {
 	}
 
 	this.collideWith = function (goody, width) {
-		var cosh = Math.cos(-this.h);
-		var sinh = Math.sin(-this.h);
-
 		var collide = (function (offset) {
 			var thisx = this.x + offset;
-			var thisy = this.y + 1.5; // since we draw the glider with width 3.
+			var thisy = this.y + 1.5; // since we draw the glider with height 3.
 
 			var dx = goody.x - thisx;
 			var dy = goody.y - thisy;
 
-			if (Math.abs(dx) > goody.radius + this.halfWidth) return false;
-			if (Math.abs(dy) > goody.radius + this.halfWidth) return false;
+			if (Math.abs(dx) > goody.radius + this.halfWidth + 3) return false;
+			if (Math.abs(dy) > goody.radius + this.halfWidth + 3) return false;
+
+			var cosh = Math.cos(-this.h);
+			var sinh = Math.sin(-this.h);
 
 			var rotated_x = Math.abs(dx * cosh - dy * sinh);
 			var rotated_y = Math.abs(dx * sinh + dy * cosh);
 
 			if (this.halfWidth > rotated_x && goody.radius + 1.5 > rotated_y) return true;
-			if (dist2(rotated_x, rotated_y, this.halfWidth, 0) < goody.radius * goody.radius) return true;
+			if (1.5 > rotated_y && goody.radius + this.halfWidth > rotated_x) return true;
+			if (dist2(rotated_x, rotated_y, this.halfWidth, 1.5) < goody.radius * goody.radius) return true;
 			return false;
 		}).bind(this);
 		if (collide(0)) return true;

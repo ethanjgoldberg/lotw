@@ -4,7 +4,7 @@ function drawBall(fill, stroke, radius) {
 	g_canvas.height = radius*2 + 4;
 	var g_context = g_canvas.getContext("2d");
 
-	g_context.arc(radius+2,radius+2,radius,0,Math.PI*2,false);
+	g_context.arc(radius+2,radius+2,radius-1.5,0,Math.PI*2,false);
 
 	g_context.fillStyle = fill;
 	g_context.strokeStyle = stroke;

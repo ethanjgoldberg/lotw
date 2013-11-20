@@ -337,11 +337,6 @@ function go() {
 
 	function draw () {
 		if (!paused) {
-			if (tick()) {
-				stop();
-				return;
-			}
-
 			if (trails) {
 				ctx.save();
 				ctx.fillStyle = 'rgba(255, 255, 255, .05)';
@@ -369,6 +364,10 @@ function go() {
 					ctx.restore();
 				}
 			}
+			if (tick()) {
+				stop();
+				return;
+			}
 		}
 
 		if (!started) drawStart();
@@ -384,17 +383,7 @@ function go() {
 			}
 		}
 
-		glider.tick(1, wind, canvas.height);
-
-		while (glider.x > canvas.width) glider.x -= canvas.width;
-		while (glider.x < 0) glider.x += canvas.width;
-
 		for (var g = 0; g < goodies.length; g++) {
-			if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y)) {
-				goodies.splice(g, 1);
-				continue;
-			}
-
 			if (glider.collideWith(goodies[g], canvas.width)) {
 				var doEffect = true;
 				if (!started) {
@@ -415,8 +404,17 @@ function go() {
 
 				if (glider.score < 0) glider.score = 0;
 				goodies.splice(g, 1);
+			} else {
+				if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y)) {
+					goodies.splice(g, 1);
+					continue;
+				}
 			}
 		}
+
+		glider.tick(1, wind, canvas.height);
+		while (glider.x > canvas.width) glider.x -= canvas.width;
+		while (glider.x < 0) glider.x += canvas.width;
 
 		if (started) {
 			var chance = diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))));
