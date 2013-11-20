@@ -143,4 +143,8 @@ function Glider (x, y) {
 			this.keys.cw = down;
 		}
 	}
+
+	this.orient = function (e) {
+		this.h += e.gamma;
+	}
 }

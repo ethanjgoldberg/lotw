@@ -38,6 +38,9 @@ function go() {
 
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
+	if (window.DeviceOrientationEvent) {
+		addEventListener('deviceorientation', glider.orient, false);
+	}
 
 	function stop () {
 		ctx.fillStyle = 'rgba(255,255,255,.5)';
@@ -46,14 +49,16 @@ function go() {
 		ctx.textAlign = 'center';
 
 		ctx.font = '30pt Calibri';
-		ctx.fillText('game over.', canvas.width/2, canvas.height/2);
-		ctx.font = '16pt Calibri';
-		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 20);
+		ctx.fillText('game over', canvas.width/2, canvas.height/2 - 80);
+		ctx.font = '10pt Calibri';
+		ctx.fillText('watch how i soar.', canvas.width/2, 12);
 		ctx.font = '24pt Calibri';
 		var seconds = Math.floor((new Date - start) / 1000);
-		ctx.fillText('' + glider.score + ' point' + (glider.score != 1? 's': '') + ' in ' + seconds + ' second' + (seconds != 1? 's': '') + '.', canvas.width/2, canvas.height/2 + 60);
-		ctx.fillText('' + glider.snitches + ' snitch' + (glider.snitches != 1? 'es': '') + ' caught. ', canvas.width/2, canvas.height/2 + 95);
-	       	ctx.fillText('' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 130);
+		ctx.fillText('' + glider.score + ' point' + (glider.score != 1? 's': '') + ' in ' + seconds + ' second' + (seconds != 1? 's': '') + '.', canvas.width/2, canvas.height/2 - 20);
+		ctx.fillText('' + glider.snitches + ' snitch' + (glider.snitches != 1? 'es': '') + ' caught. ', canvas.width/2, canvas.height/2 + 15);
+	       	ctx.fillText('' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 50);
+		ctx.font = '16pt Calibri';
+		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 100);
 
 		paused = true;
 		started = false;
