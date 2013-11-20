@@ -24,8 +24,8 @@ function go() {
 	var canvas = document.getElementById('c');
 	var ctx = canvas.getContext('2d');
 
-	canvas.width = window.innerWidth * 0.98;
-	canvas.height = window.innerHeight * 0.97;
+	canvas.width = window.innerWidth - 20;
+	canvas.height = window.innerHeight - 20;
 
 	var diff = canvas.width / 400;
 	var glider = new Glider(canvas.width/2, 100);
