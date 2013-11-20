@@ -13,6 +13,10 @@ function Wind () {
 paused = false;
 addEventListener('keydown', function (e) {if (e.keyCode==80) paused=!paused});
 started = false;
+mob = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+if (mob) {
+	canvas.addEventListener('click', function () {pause = !pause});
+}
 
 function go() {
 	if (paused) {
@@ -38,8 +42,10 @@ function go() {
 
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
-	if (window.DeviceOrientationEvent) {
-		addEventListener('deviceorientation', glider.orient, false);
+	if (mob) {
+		if (window.DeviceOrientationEvent) {
+			addEventListener('deviceorientation', function (e) { glider.orient(e.gamma) }, false);
+		}
 	}
 
 	function stop () {

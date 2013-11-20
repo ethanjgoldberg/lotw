@@ -144,7 +144,10 @@ function Glider (x, y) {
 		}
 	}
 
-	this.orient = function (e) {
-		this.h += e.gamma;
+	this.orient = function (gamma) {
+		if (gamma == 0) return;
+
+		gamma /= 15;
+		this.h += gamma * this.turn;
 	}
 }

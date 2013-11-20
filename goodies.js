@@ -99,10 +99,12 @@ function PowerUp (style, goody) {
 			ctx.beginPath();
 			if (!--this.countdown) this.countdown = 120;
 			var r = this.radius * (Math.abs(this.countdown - 60) / 120);
-			var grd = ctx.createRadialGradient(0, 0, r, 0, 0, this.radius);
-			grd.addColorStop(0, '#fff');
-			grd.addColorStop(1, '#000');
-			ctx.fillStyle = grd;
+			if (!mob) {
+				var grd = ctx.createRadialGradient(0, 0, r, 0, 0, this.radius);
+				grd.addColorStop(0, '#fff');
+				grd.addColorStop(1, '#000');
+				ctx.fillStyle = grd;
+			} else ctx.fillStyle = '#fff';
 			ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
 			ctx.fill();
 		}
