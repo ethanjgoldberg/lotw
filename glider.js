@@ -126,6 +126,7 @@ function Glider (x, y) {
 			this.score += points;
 			this.snitches++;
 		}
+		if (this.score < 0) this.score = 0;
 	}
 
 	this.keys = {

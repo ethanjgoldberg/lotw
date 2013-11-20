@@ -52,7 +52,8 @@ function go() {
 		ctx.font = '24pt Calibri';
 		var seconds = Math.floor((new Date - start) / 1000);
 		ctx.fillText('' + glider.score + ' point' + (glider.score != 1? 's': '') + ' in ' + seconds + ' second' + (seconds != 1? 's': '') + '.', canvas.width/2, canvas.height/2 + 60);
-		ctx.fillText('' + glider.snitches + ' snitch' + (glider.snitches != 1? 'es': '') + ' caught. ' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 90);
+		ctx.fillText('' + glider.snitches + ' snitch' + (glider.snitches != 1? 'es': '') + ' caught. ', canvas.width/2, canvas.height/2 + 95);
+	       	ctx.fillText('' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 130);
 
 		paused = true;
 		started = false;
@@ -434,8 +435,6 @@ function go() {
 				}
 
 				if (doEffect) effects[goodies[g].effect[0]] = goodies[g].effect[1];
-
-				if (glider.score < 0) glider.score = 0;
 				goodies.splice(g, 1);
 			} else {
 				if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y)) {
