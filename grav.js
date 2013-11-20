@@ -46,12 +46,13 @@ function go() {
 		ctx.textAlign = 'center';
 
 		ctx.font = '30pt Calibri';
-		ctx.fillText('game over', canvas.width/2, canvas.height/2);
+		ctx.fillText('game over.', canvas.width/2, canvas.height/2);
 		ctx.font = '16pt Calibri';
 		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 20);
 		ctx.font = '24pt Calibri';
-		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
-		ctx.fillText('' + glider.snitches + ' snitches caught. ' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 90);
+		var seconds = Math.floor((new Date - start) / 1000);
+		ctx.fillText('' + glider.score + ' point' + (glider.score != 1? 's': '') + ' in ' + seconds + ' second' + (seconds != 1? 's': '') + '.', canvas.width/2, canvas.height/2 + 60);
+		ctx.fillText('' + glider.snitches + ' snitch' + (glider.snitches != 1? 'es': '') + ' caught. ' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 90);
 
 		paused = true;
 		started = false;
@@ -416,6 +417,8 @@ function go() {
 
 		for (var g = 0; g < goodies.length; g++) {
 			if (glider.collideWith(goodies[g], canvas.width)) {
+				glider.givePoints(Math.ceil(speed * goodies[g].points));
+
 				var doEffect = true;
 				if (!started) {
 					started = true;
@@ -430,7 +433,6 @@ function go() {
 					glider.lives++;
 				}
 
-				glider.givePoints(Math.ceil(speed * goodies[g].points));
 				if (doEffect) effects[goodies[g].effect[0]] = goodies[g].effect[1];
 
 				if (glider.score < 0) glider.score = 0;
