@@ -90,18 +90,21 @@ function PowerUp (style, goody) {
 		ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
 		ctx.lineWidth = 2;
 		if (this.style == 'x') {
-			ctx.moveTo(-this.radius/2, -this.radius/2);
-			ctx.lineTo(this.radius/2, this.radius/2);
-			ctx.moveTo(-this.radius/2, this.radius/2);
-			ctx.lineTo(this.radius/2, -this.radius/2);
+			ctx.moveTo(-this.radius/2.5, -this.radius/2.5);
+			ctx.lineTo(this.radius/2.5, this.radius/2.5);
+			ctx.moveTo(-this.radius/2.5, this.radius/2.5);
+			ctx.lineTo(this.radius/2.5, -this.radius/2.5);
 		} else {
 			ctx.stroke();
 			ctx.beginPath();
-			if (!--this.countdown) this.countdown = 60;
-			if (this.countdown > 30) {
-				ctx.arc(0, 0, this.radius/3, 0, Math.PI * 2, false);
-				ctx.fill();
-			}
+			if (!--this.countdown) this.countdown = 120;
+			var r = this.radius * (Math.abs(this.countdown - 60) / 120);
+			var grd = ctx.createRadialGradient(0, 0, r, 0, 0, this.radius);
+			grd.addColorStop(0, '#fff');
+			grd.addColorStop(1, '#000');
+			ctx.fillStyle = grd;
+			ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
+			ctx.fill();
 		}
 		ctx.stroke();
 		ctx.restore();

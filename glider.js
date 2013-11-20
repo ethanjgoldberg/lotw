@@ -10,11 +10,14 @@ function Glider (x, y) {
 
 	this.halfWidth = 20;
 
+	this.damages = 0;
+	this.snitches = 0;
 	this.score = 0;
 	this.multiplier = 1;
-	this.magnet = 0;
 	this.lives = 3;
+
 	this.shields = 0;
+	this.magnet = 0;
 
 	this.draw = function (ctx, width, height) {
 		var d = (function (x, y, factor) {
@@ -112,11 +115,17 @@ function Glider (x, y) {
 		}
 		this.multiplier = 1;
 		this.lives--;
+		this.damages++;
 		return this.lives < 0;
 	}
 
 	this.givePoints = function (points) {
-		this.score += points * this.multiplier;
+		if (points < 100) {
+			this.score += points * this.multiplier;
+		} else {
+			this.score += points;
+			this.snitches++;
+		}
 	}
 
 	this.keys = {
@@ -126,7 +135,6 @@ function Glider (x, y) {
 
 	this.key = function(down, code) {
 		//console.log(code);
-		if (down && code == 80) paused = !paused;
 		if (code == 72 || code == 37) {
 			this.keys.ccw = down;
 		}

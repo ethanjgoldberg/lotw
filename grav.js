@@ -11,6 +11,7 @@ function Wind () {
 }
 
 paused = false;
+addEventListener('keydown', function (e) {if (e.keyCode==80) paused=!paused});
 started = false;
 
 function go() {
@@ -21,11 +22,12 @@ function go() {
 	var start = new Date();
 
 	var canvas = document.getElementById('c');
-	canvas.width = window.innerWidth * 0.98;
-	canvas.height = window.innerHeight * 0.97;
-	var diff = canvas.width / 400;
 	var ctx = canvas.getContext('2d');
 
+	canvas.width = window.innerWidth * 0.98;
+	canvas.height = window.innerHeight * 0.97;
+
+	var diff = canvas.width / 400;
 	var glider = new Glider(canvas.width/2, 100);
 	var wind = new Wind();
 	var goodies = [new Goody(1, canvas.width/2, 340, 0, 0)];
@@ -49,6 +51,7 @@ function go() {
 		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 20);
 		ctx.font = '24pt Calibri';
 		ctx.fillText('' + glider.score + ' points in ' + Math.floor((new Date() - start) / 1000) + ' seconds.', canvas.width/2, canvas.height/2 + 60);
+		ctx.fillText('' + glider.snitches + ' snitches caught. ' + glider.damages + ' damage taken.', canvas.width/2, canvas.height/2 + 90);
 
 		paused = true;
 		started = false;
@@ -62,8 +65,8 @@ function go() {
 
 		if (Math.random() < (0.04 / (glider.lives + 1))) points = 0;
 		if (Math.random() < 0.001) {
-			vy = 4;
-			points = 25;
+			vy = 5;
+			points = 20;
 		}
 
 		var goody = new Goody(points * vy, x, -20, 0, vy);
@@ -81,188 +84,206 @@ function go() {
 		goodies.push(goody);
 	}
 
+	powerUpDraws = {
+		'+': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+			ctx.moveTo(-50, 0);
+			ctx.lineTo(50, 0);
+			ctx.moveTo(0, -50);
+			ctx.lineTo(0, 50);
+			ctx.stroke();
+		},
+		'-': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+			ctx.moveTo(-50, 0);
+			ctx.lineTo(50, 0);
+			ctx.stroke();
+		},
+		'm': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+
+			ctx.arc(0, 0, 50, Math.PI, 0, false);
+
+			ctx.moveTo(-50, 0);
+			ctx.lineTo(-50, 50);
+			ctx.lineTo(-30, 50);
+			ctx.lineTo(-30, 0);
+
+			ctx.arc(0, 0, 30, Math.PI, 0, false);
+
+			ctx.moveTo(50, 0);
+			ctx.lineTo(50, 50);
+			ctx.lineTo(30, 50);
+			ctx.lineTo(30, 0);
+
+			ctx.moveTo(-50, 40);
+			ctx.lineTo(-30, 40);
+
+			ctx.stroke();
+		},
+		't': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+			ctx.arc(0, 0, 50, 0, Math.PI, false);
+
+			ctx.stroke();
+		},
+		'.': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+
+			ctx.arc(0, 0, 50, 0, Math.PI * 2, false);
+
+			ctx.moveTo(50, 0);
+			ctx.lineTo(30, 0);
+			ctx.moveTo(-50, 0);
+			ctx.lineTo(-30, 0);
+			ctx.moveTo(0, 50);
+			ctx.lineTo(0, 30);
+			ctx.moveTo(0, -50);
+			ctx.lineTo(0, -30);
+
+			ctx.moveTo(-20, 0);
+			ctx.lineTo(20, 0);
+			ctx.moveTo(0, -20);
+			ctx.lineTo(0, 20);
+
+			ctx.stroke();
+		},
+		',': function (ctx) {
+			ctx.lineWidth = 10;
+			ctx.beginPath();
+			ctx.arc(0, 0, 50, 0, Math.PI * 2, false);
+
+			ctx.moveTo(50, 0);
+			ctx.lineTo(30, 0);
+			ctx.moveTo(-50, 0);
+			ctx.lineTo(-30, 0);
+			ctx.moveTo(0, 50);
+			ctx.lineTo(0, 30);
+			ctx.moveTo(0, -50);
+			ctx.lineTo(0, -30);
+
+			ctx.moveTo(-20, 0);
+			ctx.lineTo(20, 0);
+
+			ctx.stroke();
+		}
+	};
+
 	var powerdowns = [];
 
 	var powerUpDoes = {
 		'+': function () {
 			glider.halfWidth *= 2;
 			powerdowns.push([900, function () {
-				glider.halfWidth /= 2;
-			}, '+',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					glider.halfWidth /= 2;
+					}, '+',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-				ctx.beginPath();
-				ctx.moveTo(-50, 0);
-				ctx.lineTo(50, 0);
-				ctx.moveTo(0, -50);
-				ctx.lineTo(0, 50);
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws['+'](ctx);
+					ctx.restore();
+					}]);
 		},
 		'-': function () {
 			glider.halfWidth /= 2;
 			powerdowns.push([900, function () {
-				glider.halfWidth *= 2;
-			}, '-',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					glider.halfWidth *= 2;
+					}, '-',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-				ctx.beginPath();
-				ctx.moveTo(-50, 0);
-				ctx.lineTo(50, 0);
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws['-'](ctx);
+					ctx.restore();
+					}]);
 		},
 		'm': function () {
 			glider.magnet += 3000;
 			powerdowns.push([900, function () {
-				glider.magnet -= 3000;
-			}, 'm',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					glider.magnet -= 3000;
+					}, 'm',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-
-				ctx.beginPath();
-				
-				ctx.arc(0, 0, 50, Math.PI, 0, false);
-				
-				ctx.moveTo(-50, 0);
-				ctx.lineTo(-50, 50);
-				ctx.lineTo(-30, 50);
-				ctx.lineTo(-30, 0);
-
-				ctx.arc(0, 0, 30, Math.PI, 0, false);
-
-				ctx.moveTo(50, 0);
-				ctx.lineTo(50, 50);
-				ctx.lineTo(30, 50);
-				ctx.lineTo(30, 0);
-
-				ctx.moveTo(-50, 40);
-				ctx.lineTo(-30, 40);
-
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws['m'](ctx);
+					ctx.restore();
+					}]);
 		},
 		't': function () {
 			trails++;
 			powerdowns.push([900, function () {
-				trails--;
-			}, 't',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					trails--;
+					}, 't',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-
-				ctx.beginPath();
-				ctx.arc(0, 0, 50, 0, Math.PI, false);
-
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws['t'](ctx);
+					ctx.restore();
+					}]);
 		},
 		'.': function () {
 			speed *= 2;
 			powerdowns.push([900, function () {
-				speed /= 2;
-			}, '.',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					speed /= 2;
+					}, '.',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-				ctx.beginPath();
-
-				ctx.arc(0, 0, 50, 0, Math.PI * 2, false);
-
-				ctx.moveTo(50, 0);
-				ctx.lineTo(30, 0);
-				ctx.moveTo(-50, 0);
-				ctx.lineTo(-30, 0);
-				ctx.moveTo(0, 50);
-				ctx.lineTo(0, 30);
-				ctx.moveTo(0, -50);
-				ctx.lineTo(0, -30);
-
-				ctx.moveTo(-20, 0);
-				ctx.lineTo(20, 0);
-				ctx.moveTo(0, -20);
-				ctx.lineTo(0, 20);
-
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws['.'](ctx);
+					ctx.restore();
+					}]);
 		},
 		',': function () {
 			speed /= 2;
 			powerdowns.push([900, function () {
-				speed *= 2;
-			}, ',',
-			function (ctx, ticksRemaining) {
-				var t = 120 - (900 - ticksRemaining);
-				if (t < 0) return;
+					speed *= 2;
+					}, ',',
+					function (ctx, ticksRemaining) {
+					var t = 120 - (900 - ticksRemaining);
+					if (t < 0) return;
 
-				ctx.save();
-				ctx.translate(canvas.width/2, canvas.height/2);
-				ctx.lineWidth = 10;
-				ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
-				var factor = 360 / (240 + t);
-				ctx.scale(factor, factor);
-
-				ctx.beginPath();
-				ctx.arc(0, 0, 50, 0, Math.PI * 2, false);
-
-				ctx.moveTo(50, 0);
-				ctx.lineTo(30, 0);
-				ctx.moveTo(-50, 0);
-				ctx.lineTo(-30, 0);
-				ctx.moveTo(0, 50);
-				ctx.lineTo(0, 30);
-				ctx.moveTo(0, -50);
-				ctx.lineTo(0, -30);
-
-				ctx.moveTo(-20, 0);
-				ctx.lineTo(20, 0);
-
-				ctx.stroke();
-				ctx.restore();
-			}]);
+					ctx.save();
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.strokeStyle = 'rgba(0,0,0,$)'.replace(/\$/, t / 480);
+					var factor = 360 / (240 + t);
+					ctx.scale(factor, factor);
+					powerUpDraws[','](ctx);
+					ctx.restore();
+					}]);
 		},
 		's': function () {
 			glider.shields++;
@@ -293,7 +314,7 @@ function go() {
 		ctx.fillText('a leaf on the wind', canvas.width/2, 40);
 
 		ctx.font = '12pt Calibri';
-		ctx.fillText('left and right arrows to turn your glider.', canvas.width/2, 140);
+		ctx.fillText('left and right arrows to turn your glider. \'p\' to pause.', canvas.width/2, 140);
 		ctx.fillText('catch green orbs to get points. orbs that move faster give more points.', canvas.width/2, 170);
 		ctx.fillText('avoid red orbs. each red orb costs you a life.', canvas.width/2, 200);
 		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);
@@ -330,6 +351,16 @@ function go() {
 		for (var i = 0; i < glider.lives; i++) {
 			var y = canvas.height - (90 - 4*i);
 			ctx.fillRect(hw - (size2 - size1)/2, y, size2 - 4, 2);
+		}
+		for (var i = 0; i < powerdowns.length; i++) {
+			var icon = powerUpDraws[powerdowns[i][2]];
+			if (icon) {
+				ctx.save();
+				ctx.translate(hw - (size2 - size1)/2 + (i % 2) * 16 + 6, canvas.height - 80 + 4 * glider.lives + Math.floor(i / 2) * 16);
+				ctx.scale(0.12, 0.12);
+				icon(ctx);
+				ctx.restore();
+			}
 		}
 
 		ctx.restore();
@@ -368,9 +399,9 @@ function go() {
 				stop();
 				return;
 			}
-		}
 
-		if (!started) drawStart();
+			if (!started) drawStart();
+		}
 
 		window.requestAnimationFrame(draw);
 	}
