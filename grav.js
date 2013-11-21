@@ -6,7 +6,7 @@ function dist2(x1, y1, x2, y2) {
 
 function Wind () {
 	this.getWindAt = function (x, y) {
-		return [0, -.2];
+		return [0, -.19 - 0.01*(y / 50)];
 	}
 }
 
