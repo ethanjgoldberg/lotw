@@ -84,12 +84,12 @@ function PowerUp (style, goody) {
 
 	this.draw = function (ctx) {
 		ctx.save();
-		ctx.fillStyle = '#000';
+		ctx.fillStyle = '#fff';
 		ctx.strokeStyle = '#000';
+		ctx.lineWidth = 2;
 		ctx.translate(this.x, this.y);
 		ctx.beginPath();
 		ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
-		ctx.lineWidth = 2;
 		if (this.style == 'x') {
 			ctx.moveTo(-this.radius/2.5, -this.radius/2.5);
 			ctx.lineTo(this.radius/2.5, this.radius/2.5);
@@ -97,17 +97,13 @@ function PowerUp (style, goody) {
 			ctx.lineTo(this.radius/2.5, -this.radius/2.5);
 		} else {
 			ctx.stroke();
-			ctx.beginPath();
-			if (!--this.countdown) this.countdown = 120;
-			var r = this.radius * (Math.abs(this.countdown - 60) / 120);
-			if (!mob) {
-				var grd = ctx.createRadialGradient(0, 0, r, 0, 0, this.radius);
-				grd.addColorStop(0, '#fff');
-				grd.addColorStop(1, '#000');
-				ctx.fillStyle = grd;
-			} else ctx.fillStyle = '#fff';
-			ctx.arc(0, 0, this.radius, 0, Math.PI * 2, false);
-			ctx.fill();
+			this.countdown++;
+			while (this.countdown >= 120) this.countdown -= 120;
+			if (this.countdown < 60) {
+				ctx.beginPath();
+				var r = this.radius * this.countdown / 60;
+				ctx.arc(0, 0, r, 0, Math.PI * 2, false);
+			}
 		}
 		ctx.stroke();
 		ctx.restore();
