@@ -2,6 +2,38 @@
 <script src=goodies.js></script>
 <script src=glider.js></script>
 <script src=grav.js></script>
-<body onLoad=go()>
+<body onload=go()>
 	<canvas style="border:2px solid #ccc;" id=c></canvas>
+	<fb:login-button show-faces="true" width="200" max-rows="1" scope=publish_actions></fb:login-button>
+
+	<div id="fb-root"></div>
+	<script>window.fbAsyncInit = function() {
+			FB.init({
+				appId      : '207758649408103',                        // App ID from the app dashboard
+				status     : true,                                 // Check Facebook Login status
+				xfbml      : true                                  // Look for social plugins on the page
+			});
+
+			FB.getLoginStatus(function(response) {
+					console.log(response);
+					if (response.authResponse) {
+					connected = true;
+					}
+					else{
+					connected = false;
+					}
+					}, true);
+		};
+
+		// Load the SDK asynchronously
+		(function(){
+ 		if (document.getElementById('facebook-jssdk')) {return;}
+ 		var firstScriptElement = document.getElementsByTagName('script')[0];
+ 		var facebookJS = document.createElement('script'); 
+ 		facebookJS.id = 'facebook-jssdk';
+ 		facebookJS.src = '//connect.facebook.net/en_US/all.js';
+ 		firstScriptElement.parentNode.insertBefore(facebookJS, firstScriptElement);
+ 		}());
+
+	</script>
 </body>

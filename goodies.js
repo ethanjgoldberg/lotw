@@ -65,7 +65,8 @@ function Goody (points, x, y, vx, vy) {
 		this.y += mult * this.vy;
 	}
 
-	this.draw = function (ctx) {
+	this.draw = function (ctx, maxHeight) {
+		if (this.y > maxHeight) return;
 		ctx.drawImage(gumdrops[this.color], this.x - this.radius - 2, this.y - this.radius - 2);
 	}
 }

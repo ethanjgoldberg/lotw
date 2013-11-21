@@ -66,6 +66,12 @@ function go() {
 		ctx.font = '16pt Calibri';
 		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 100);
 
+		if (connected) {
+			FB.api('/me/scores/', 'post', { score: glider.score }, function (response) {
+				console.log('score: ', response);
+			});
+		} 
+
 		paused = true;
 		started = false;
 		go();
@@ -396,7 +402,7 @@ function go() {
 			glider.draw(ctx, canvas.width, canvas.height);
 
 			for (var g = 0; g < goodies.length; g++) {
-				goodies[g].draw(ctx);
+				goodies[g].draw(ctx, canvas.height + 20);
 			}
 
 			for (var e in effects) {
