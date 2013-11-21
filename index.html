@@ -2,9 +2,29 @@
 <script src=goodies.js></script>
 <script src=glider.js></script>
 <script src=grav.js></script>
+<link rel=stylesheet href=./fb-buttons.css />
+<style>
+#fbld {
+	position: absolute;
+	bottom: 10px;
+	left: 10px;
+}
+.hidden {
+	display: none;
+}
+.wide {
+	width: 100%;
+}
+</style>
 <body onload=go()>
 	<canvas style="border:2px solid #ccc;" id=c></canvas>
-	<fb:login-button show-faces="true" width="200" max-rows="1" scope=publish_actions></fb:login-button>
+	<div id=fbld class=hidden>
+		<fb:login-button id=fbl show-faces="true" width="100" max-rows="1" scope=publish_actions></fb:login-button>
+		<span id=in class=hidden>
+			<div><input type=button class="uibutton confirm wide" onclick=challenge() value="Challenge a Friend"></div>
+			<div><input type=button class="uibutton confirm wide" onclick=brag() value="Brag about your Score"></div>
+		</span>
+	</div>
 
 	<div id="fb-root"></div>
 	<script>window.fbAsyncInit = function() {
@@ -18,11 +38,19 @@
 					console.log(response);
 					if (response.authResponse) {
 					connected = true;
-					}
-					else{
+					document.getElementById('in').classList.remove('hidden');
+					} else{
 					connected = false;
 					}
 					}, true);
+			FB.Event.subscribe('auth.authResponseChange', function (response) {
+					if (response.authResponse) {
+					document.getElementById('in').classList.remove('hidden');
+					connected = true;
+					} else {
+					connected = false;
+					}
+					});
 		};
 
 		// Load the SDK asynchronously

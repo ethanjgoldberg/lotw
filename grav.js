@@ -18,6 +18,14 @@ if (mob) {
 	canvas.addEventListener('click', function () {pause = !pause});
 }
 
+var challenge;
+var brag;
+
+
+function fbCallback (result) {
+	console.log('fb:', result);
+}
+
 function go() {
 	if (paused) {
 		setTimeout(go, 400);
@@ -27,6 +35,7 @@ function go() {
 
 	var canvas = document.getElementById('c');
 	var ctx = canvas.getContext('2d');
+	document.getElementById('fbld').classList.add('hidden');
 
 	canvas.width = window.innerWidth - 20;
 	canvas.height = window.innerHeight - 20;
@@ -48,6 +57,21 @@ function go() {
 		}
 	}
 
+	challenge = function () {
+		FB.ui({method: 'apprequests',
+			title: 'A Leaf on the Wind',
+			message: 'I scored ' + glider.score + ' points. Can you beat it?',
+		}, fbCallback);
+	}
+
+	brag = function () {
+		FB.ui({method: 'feed',
+			caption: 'I just scored ' + glider.score + ' points. Can you beat it?',
+			picture: 'http://www.anism.org/lotw/lotw_icon.png',
+			name: 'Watch how I soar.'
+		}, fbCallback);
+	}
+
 	function stop () {
 		ctx.fillStyle = 'rgba(255,255,255,.5)';
 		ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -66,11 +90,16 @@ function go() {
 		ctx.font = '16pt Calibri';
 		ctx.fillText('press \'p\' to play again.', canvas.width/2, canvas.height/2 + 100);
 
+		document.getElementById('fbld').classList.remove('hidden');
+
 		if (connected) {
 			FB.api('/me/scores/', 'post', { score: glider.score }, function (response) {
 				console.log('score: ', response);
 			});
-		} 
+		} else {
+			ctx.font = '14pt Calibri';
+			ctx.fillText('connect with facebook to challenge your friends!', canvas.width/2, canvas.height/2 + 140);
+		}
 
 		paused = true;
 		started = false;
