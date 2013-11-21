@@ -125,7 +125,7 @@ function go() {
 			goody = new PowerUp(style, goody);
 		}
 
-		if (Math.random() < 0.03) {
+		if (Math.random() < (0.04 / glider.multiplier)) {
 			goody = new PowerUp('x', goody);
 		}
 
