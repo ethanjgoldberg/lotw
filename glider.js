@@ -62,6 +62,10 @@ function Glider (x, y) {
 
 		if (this.keys.cw) this.h += mult * this.turn;
 		if (this.keys.ccw) this.h -= mult * this.turn;
+		if (this.keys.cw || this.keys.ccw) {
+			this.sinh = null;
+			this.cosh = null;
+		}
 
 		var windVec = wind.getWindAt(this.x, this.y);
 		windVec[0] -= this.vx;
@@ -91,11 +95,11 @@ function Glider (x, y) {
 			if (Math.abs(dx) > goody.radius + this.halfWidth + 3) return false;
 			if (Math.abs(dy) > goody.radius + this.halfWidth + 3) return false;
 
-			var cosh = Math.cos(-this.h);
-			var sinh = Math.sin(-this.h);
+			this.cosh = this.cosh || Math.cos(-this.h);
+			this.sinh = this.sinh || Math.sin(-this.h);
 
-			var rotated_x = Math.abs(dx * cosh - dy * sinh);
-			var rotated_y = Math.abs(dx * sinh + dy * cosh);
+			var rotated_x = Math.abs(dx * this.cosh - dy * this.sinh);
+			var rotated_y = Math.abs(dx * this.sinh + dy * this.cosh);
 
 			if (this.halfWidth > rotated_x && goody.radius + 1.5 > rotated_y) return true;
 			if (1.5 > rotated_y && goody.radius + this.halfWidth > rotated_x) return true;

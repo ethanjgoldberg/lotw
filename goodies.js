@@ -63,6 +63,8 @@ function Goody (points, x, y, vx, vy) {
 
 		this.x += mult * this.vx;
 		this.y += mult * this.vy;
+
+		return this.y;
 	}
 
 	this.draw = function (ctx, maxHeight) {

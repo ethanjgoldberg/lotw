@@ -21,7 +21,6 @@ if (mob) {
 var challenge;
 var brag;
 
-
 function fbCallback (result) {
 	console.log('fb:', result);
 }
@@ -483,7 +482,7 @@ function go() {
 				if (doEffect) effects[goodies[g].effect[0]] = goodies[g].effect[1];
 				goodies.splice(g, 1);
 			} else {
-				if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y)) {
+				if (goodies[g].tick(speed, glider.magnet, glider.x, glider.y) > canvas.width*2) {
 					goodies.splice(g, 1);
 					continue;
 				}
