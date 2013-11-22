@@ -46,7 +46,7 @@ function go() {
 	var effects = {};
 	var trails = 0;
 	var speed = 1;
-	var difficulty = 6;
+	var difficulty = 7;
 
 	addEventListener('keydown', function(e){glider.key(true, e.keyCode)});
 	addEventListener('keyup', function(e){glider.key(false, e.keyCode)});
@@ -124,7 +124,7 @@ function go() {
 			goody = new PowerUp(style, goody);
 		}
 
-		if (Math.random() < (0.04 / glider.multiplier)) {
+		if (Math.random() < (0.04 / (glider.multiplier * glider.multiplier))) {
 			goody = new PowerUp('x', goody);
 		}
 
