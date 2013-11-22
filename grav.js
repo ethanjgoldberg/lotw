@@ -65,9 +65,11 @@ function go() {
 
 	brag = function () {
 		FB.ui({method: 'feed',
-			caption: 'I just scored ' + glider.score + ' points. Can you beat it?',
+			description: 'I just scored ' + glider.score + ' points. Can you beat it?',
+			caption: 'Watch how I soar.',
 			picture: 'http://www.anism.org/lotw/lotw_icon.png',
-			name: 'Watch how I soar.'
+			link: 'http://www.anism.org/lotw/',
+			name: 'A Leaf on the Wind'
 		}, fbCallback);
 	}
 
