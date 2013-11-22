@@ -42,7 +42,7 @@ function go() {
 	var diff = canvas.width / 400;
 	var glider = new Glider(canvas.width/2, 100);
 	var wind = new Wind();
-	var goodies = [new Goody(1, canvas.width/2, 340, 0, 0)];
+	var goodies = [new Goody(1, canvas.width/2, 370, 0, 0)];
 	var effects = {};
 	var trails = 0;
 	var speed = 1;
@@ -367,7 +367,8 @@ function go() {
 		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);
 		ctx.fillText('the golden snitch is very rare. it is worth 100 points.', canvas.width/2, 260);
 		ctx.fillText('power-ups do a variety of things, not all of them good.', canvas.width/2, 290);
-		ctx.fillText('ready? catch this orb to begin.', canvas.width/2, 320);
+		ctx.fillText('one last thing: the more you win, the harder it gets.', canvas.width/2, 320);
+		ctx.fillText('ready? catch this orb to begin.', canvas.width/2, 350);
 
 		ctx.restore();
 	}
