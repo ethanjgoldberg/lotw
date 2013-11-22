@@ -366,7 +366,7 @@ function go() {
 		ctx.fillText('left and right, or \'a\' and \'d\', to turn your glider. \'p\' to pause.', canvas.width/2, 140);
 		ctx.fillText('catch green orbs to get points. orbs that move faster give more points.', canvas.width/2, 170);
 		ctx.fillText('avoid red orbs. each red orb costs you a life.', canvas.width/2, 200);
-		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);
+		ctx.fillText('you get 3 lives. catch a blue orb to gain a life.', canvas.width/2, 230);
 		ctx.fillText('the golden snitch is very rare. it is worth 100 points.', canvas.width/2, 260);
 		ctx.fillText('power-ups do a variety of things, not all of them good.', canvas.width/2, 290);
 		ctx.fillText('one last thing: the more you win, the harder it gets.', canvas.width/2, 320);
@@ -495,6 +495,11 @@ function go() {
 		glider.tick(1, wind, canvas.height);
 		while (glider.x > canvas.width) glider.x -= canvas.width;
 		while (glider.x < 0) glider.x += canvas.width;
+
+		if (!started && glider.y > canvas.width + 50) {
+			glider = new Glider(canvas.width / 2, 100);
+			effects['rgba(255,0,0,$)'] = 60;
+		}
 
 		if (started) {
 			var chance = diff * (1 - difficulty / Math.log(glider.score+(Math.pow(Math.E,difficulty + 0.01))));
