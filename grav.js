@@ -361,7 +361,7 @@ function go() {
 		ctx.fillText('a leaf on the wind', canvas.width/2, 40);
 
 		ctx.font = '12pt Calibri';
-		ctx.fillText('left and right arrows to turn your glider. \'p\' to pause.', canvas.width/2, 140);
+		ctx.fillText('left and right, or \'a\' and \'d\', to turn your glider. \'p\' to pause.', canvas.width/2, 140);
 		ctx.fillText('catch green orbs to get points. orbs that move faster give more points.', canvas.width/2, 170);
 		ctx.fillText('avoid red orbs. each red orb costs you a life.', canvas.width/2, 200);
 		ctx.fillText('you get 3 lives. catch a blue orb to restore a life.', canvas.width/2, 230);

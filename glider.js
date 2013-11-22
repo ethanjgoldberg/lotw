@@ -139,11 +139,11 @@ function Glider (x, y) {
 	}
 
 	this.key = function(down, code) {
-		//console.log(code);
-		if (code == 72 || code == 37) {
+		console.log(code);
+		if (code == 72 || code == 37 || code == 65) {
 			this.keys.ccw = down;
 		}
-		if (code == 84 || code == 39) {
+		if (code == 84 || code == 39 || code == 68) {
 			this.keys.cw = down;
 		}
 	}
