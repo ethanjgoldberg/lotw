@@ -35,7 +35,6 @@ function go() {
 	var canvas = document.getElementById('c');
 	var ctx = canvas.getContext('2d');
 	document.getElementById('fbld').classList.add('hidden');
-
 	canvas.width = window.innerWidth - 20;
 	canvas.height = window.innerHeight - 20;
 
@@ -65,7 +64,7 @@ function go() {
 
 	brag = function () {
 		FB.ui({method: 'feed',
-			description: 'I just scored ' + glider.score + ' points. Can you beat it?',
+			description: 'I got ' + glider.score + ' points. Can you beat my score?',
 			caption: 'Watch how I soar.',
 			picture: 'http://www.anism.org/lotw/lotw_icon.png',
 			link: 'http://www.anism.org/lotw/',
@@ -496,8 +495,16 @@ function go() {
 		while (glider.x > canvas.width) glider.x -= canvas.width;
 		while (glider.x < 0) glider.x += canvas.width;
 
-		if (!started && glider.y > canvas.width + 50) {
+		if (!started && glider.y > canvas.height * 2) {
 			glider = new Glider(canvas.width / 2, 100);
+			effects['rgba(255,0,0,$)'] = 60;
+		} else if (started && glider.y > canvas.height * 4) {
+			glider.x = canvas.width / 2;
+			glider.y = 100;
+			glider.vx = 0;
+			glider.vy = 0;
+			glider.h = 0;
+			glider.damage();
 			effects['rgba(255,0,0,$)'] = 60;
 		}
 

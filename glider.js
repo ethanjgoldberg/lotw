@@ -16,6 +16,8 @@ function Glider (x, y) {
 	this.multiplier = 1;
 	this.lives = 3;
 
+	this.invulnerable = 0;
+
 	this.shields = 0;
 	this.magnet = 0;
 
@@ -30,7 +32,8 @@ function Glider (x, y) {
 			ctx.translate(x, y);
 			ctx.rotate(this.h);
 			ctx.scale(factor, factor);
-			ctx.fillStyle = '#000';
+			if (this.invulnerable) ctx.fillStyle = 'rgba(0, 0, 0, .5)';
+			else ctx.fillStyle = '#000';
 			ctx.fillRect(-this.halfWidth, -1.5, 2*this.halfWidth, 3);
 			ctx.restore();
 		}).bind(this);
@@ -58,6 +61,7 @@ function Glider (x, y) {
 	}
 
 	this.tick = function (mult, wind, height) {
+		if (this.invulnerable > 0) this.invulnerable--;
 		var r = false;
 
 		if (this.keys.cw) this.h += mult * this.turn;
@@ -85,6 +89,8 @@ function Glider (x, y) {
 	}
 
 	this.collideWith = function (goody, width) {
+		if (this.invulnerable > 0) return false;
+
 		var collide = (function (offset) {
 			var thisx = this.x + offset;
 			var thisy = this.y + 1.5; // since we draw the glider with height 3.
@@ -120,6 +126,7 @@ function Glider (x, y) {
 		this.multiplier = 1;
 		this.lives--;
 		this.damages++;
+		//this.invulnerable = 15;
 		return this.lives < 0;
 	}
 
